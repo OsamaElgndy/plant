@@ -1,3 +1,6 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import HeroSlider from '@/components/HeroSlider';
 import ProductCard from '@/components/ProductCard';
@@ -44,10 +47,36 @@ const featuredProducts = [
 ];
 
 export default function Home() {
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+
+  // Load favorites from localStorage on component mount
+  useEffect(() => {
+    const savedFavorites = localStorage.getItem('plantFavorites');
+    if (savedFavorites) {
+      setFavorites(new Set(JSON.parse(savedFavorites)));
+    }
+  }, []);
+
+  // Save favorites to localStorage whenever favorites change
+  useEffect(() => {
+    localStorage.setItem('plantFavorites', JSON.stringify(Array.from(favorites)));
+  }, [favorites]);
+
+  const handleFavoriteToggle = (id: string, isFavorite: boolean) => {
+    setFavorites(prev => {
+      const newFavorites = new Set(prev);
+      if (isFavorite) {
+        newFavorites.add(id);
+      } else {
+        newFavorites.delete(id);
+      }
+      return newFavorites;
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      
       <HeroSlider />
       
       {/* Featured Products Section */}
@@ -65,7 +94,13 @@ export default function Home() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {featuredProducts.map((product) => (
-              <ProductCard key={product.id} {...product} />
+              <ProductCard 
+                key={product.id} 
+                {...product} 
+                showMoreDetails={true}
+                isFavorite={favorites.has(product.id)}
+                onFavoriteToggle={handleFavoriteToggle}
+              />
             ))}
           </div>
           
