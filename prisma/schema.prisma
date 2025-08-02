@@ -8,55 +8,43 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique
-  phone     String    @unique
+  id        Int        @id @default(autoincrement())
+  email     String     @unique
+  phone     String     @unique
   password  String
-
   favorites Favorite[]
   plants    Plant[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+enum StatusPuy {
+  CONFIRMATION
+  REQUEST
+  RECEIVE
 }
-enum Category {
-  INDOOR
-  OUTDOOR
-  SUCCULENT
-  HERB
-  OTHER
-}
+
 model Plant {
-  id             Int       @id @default(autoincrement())
-  name           String
-  species        String?
-  description    String?
-  location       String?
-  category       Category  @default(OTHER)
-  plantedDate    DateTime  @default(now())
-  lastWatered    DateTime?
-  lastFertilized DateTime?
-  health         String    @default("healthy") 
-  imageUrl       String?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  userId         Int
-  user           User      @relation(fields: [userId], references: [id])
-
-  favorites      Favorite[]
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String
+  category    String
+  seasons     String
+  imageUrl    String
+  userId      Int?
+  user        User?     @relation(fields: [userId], references: [id])
+  statusPuy   StatusPuy @default(CONFIRMATION)
+  status      Boolean   @default(true)
+  favorites   Favorite[]
+  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime  @default(now())
 }
 
 model Favorite {
-  id        Int       @id @default(autoincrement())
+  userId  Int
+  plantId Int
+  user    User   @relation(fields: [userId], references: [id])
+  plant   Plant  @relation(fields: [plantId], references: [id])
 
-  userId    Int
-  plantId   Int
-
-  user      User      @relation(fields: [userId], references: [id])
-  plant     Plant     @relation(fields: [plantId], references: [id])
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
-  @@unique([userId, plantId])
+  @@id([userId, plantId])
 }
