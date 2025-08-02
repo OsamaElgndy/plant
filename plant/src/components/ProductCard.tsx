@@ -2,6 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils'; // Utility for conditional classes
+import { Heart } from 'lucide-react';
 
 interface ProductCardProps {
   id: string;
@@ -16,22 +20,21 @@ interface ProductCardProps {
   onFavoriteToggle?: (id: string, isFavorite: boolean) => void;
 }
 
-export default function ProductCard({ 
-  id, 
-  name, 
-  price, 
-  image, 
-  category, 
-  description, 
-  inStock, 
+export default function ProductCard({
+  id,
+  name,
+  price,
+  image,
+  category,
+  description,
+  inStock,
   showMoreDetails = true,
   isFavorite = false,
-  onFavoriteToggle
+  onFavoriteToggle,
 }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [favoriteState, setFavoriteState] = useState(isFavorite);
 
-  // Sync favorite state with prop
   useEffect(() => {
     setFavoriteState(isFavorite);
   }, [isFavorite]);
@@ -43,19 +46,14 @@ export default function ProductCard({
   };
 
   return (
-    <div 
-      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+    <Card
+      className="overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Product Image */}
+      {/* Image Section */}
       <div className="relative h-48 bg-gray-100">
-        <Image
-          src={image}
-          alt={name}
-          fill
-          className="object-cover"
-        />
+        <Image src={image} alt={name} fill className="object-cover" />
         <div className="absolute top-2 left-2">
           <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full">
             {category}
@@ -68,29 +66,25 @@ export default function ProductCard({
             </span>
           </div>
         )}
-        
-        {/* More Details Button - Appears on Hover only when showMoreDetails is true */}
-        {showMoreDetails &&  isHovered && (
-          <div className="absolute inset-0 flex items-end justify-center transition-all duration-300">
-            <div className="w-full  bg-opacity-50 p-3">
-              <button className="w-full bg-white text-green-600 py-2 px-4 rounded-md font-medium hover:bg-green-600 hover:text-white transition-colors duration-200 shadow-lg">
+
+        {showMoreDetails && isHovered && (
+          <div className="absolute inset-0 flex items-end justify-center">
+            <div className="w-full bg-white bg-opacity-80 p-3">
+              <Button variant="outline" className="w-full">
                 المزيد من التفاصيل
-              </button>
+              </Button>
             </div>
           </div>
         )}
       </div>
 
-      {/* Product Info */}
-      <div className="p-4">
+      {/* Card Content */}
+      <CardContent className="p-4">
         <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
           {name}
         </h3>
-        <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-          {description}
-        </p>
-        
-        {/* Price */}
+        <p className="text-gray-600 text-sm mb-3 line-clamp-2">{description}</p>
+
         <div className="flex items-center justify-between mb-4">
           <span className="text-2xl font-bold text-green-600">
             ${price.toFixed(2)}
@@ -103,30 +97,25 @@ export default function ProductCard({
 
         {/* Action Buttons */}
         <div className="flex space-x-2">
-          <button 
-            className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors ${
-              inStock 
-                ? 'bg-green-600 text-white hover:bg-green-700' 
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            }`}
+          <Button
+            className="flex-1"
             disabled={!inStock}
+            variant={inStock ? 'default' : 'secondary'}
           >
             {inStock ? 'أضف إلى السلة' : 'نفذت الكمية'}
-          </button>
-          <button 
+          </Button>
+          <Button
             onClick={handleFavoriteClick}
-            className={`py-2 px-3 rounded-md border transition-colors ${
-              favoriteState 
-                ? 'bg-red-500 border-red-500 text-white hover:bg-red-600' 
-                : 'border-green-600 text-green-600 hover:bg-green-50'
-            }`}
+            variant="outline"
+            className={cn(
+              'px-3',
+              favoriteState ? 'bg-red-500 hover:bg-red-600 text-white border-red-500' : 'text-green-600 border-green-600 hover:bg-green-50'
+            )}
           >
-            <svg className="w-5 h-5" fill={favoriteState ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            </svg>
-          </button>
+            <Heart className="w-5 h-5 fill-current" fill={favoriteState ? 'currentColor' : 'none'} />
+          </Button>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
-} 
+}
