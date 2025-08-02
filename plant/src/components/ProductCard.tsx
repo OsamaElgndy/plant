@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils'; // Utility for conditional classes
-import { Heart } from 'lucide-react';
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils"; // Utility for conditional classes
+import { Heart } from "lucide-react";
 
 interface ProductCardProps {
   id: string;
@@ -52,13 +52,22 @@ export default function ProductCard({
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Image Section */}
-      <div className="relative h-48 bg-gray-100">
-        <Image src={image} alt={name} fill className="object-cover" />
+      <div className="relative overflow-hidden  rounded-lg  h-48 w-full bg-gray-100">
+        <Image
+          src={image}
+          alt={name}
+          fill
+          className="object-cover "
+          sizes="100vw"
+          priority
+        />
+
         <div className="absolute top-2 left-2">
           <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full">
             {category}
           </span>
         </div>
+
         {!inStock && (
           <div className="absolute top-2 right-2">
             <span className="bg-red-600 text-white text-xs px-2 py-1 rounded-full">
@@ -69,8 +78,8 @@ export default function ProductCard({
 
         {showMoreDetails && isHovered && (
           <div className="absolute inset-0 flex items-end justify-center">
-            <div className="w-full bg-white bg-opacity-80 p-3">
-              <Button variant="outline" className="w-full">
+            <div className="w-full bg-white  bg-opacity-80 p-3">
+              <Button variant="outline" className="hover:bg-green-500  w-full">
                 المزيد من التفاصيل
               </Button>
             </div>
@@ -100,19 +109,24 @@ export default function ProductCard({
           <Button
             className="flex-1"
             disabled={!inStock}
-            variant={inStock ? 'default' : 'secondary'}
+            variant={inStock ? "default" : "secondary"}
           >
-            {inStock ? 'أضف إلى السلة' : 'نفذت الكمية'}
+            {inStock ? "أضف إلى السلة" : "نفذت الكمية"}
           </Button>
           <Button
             onClick={handleFavoriteClick}
             variant="outline"
             className={cn(
-              'px-3',
-              favoriteState ? 'bg-red-500 hover:bg-red-600 text-white border-red-500' : 'text-green-600 border-green-600 hover:bg-green-50'
+              "px-3",
+              favoriteState
+                ? " bg-red-500 hover:bg-red-600 text-white border-red-500"
+                : "text-green-600 border-green-600 hover:bg-green-500 "
             )}
           >
-            <Heart className="w-5 h-5 fill-current" fill={favoriteState ? 'currentColor' : 'none'} />
+            <Heart
+              className="w-5 h-5 fill-current"
+              fill={favoriteState ? "currentColor" : "none"}
+            />
           </Button>
         </div>
       </CardContent>
