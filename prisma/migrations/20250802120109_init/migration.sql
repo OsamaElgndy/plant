@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE "Plant" (
+CREATE TABLE "public"."Plant" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "species" TEXT,
@@ -17,7 +17,7 @@ CREATE TABLE "Plant" (
 );
 
 -- CreateTable
-CREATE TABLE "CareLog" (
+CREATE TABLE "public"."CareLog" (
     "id" TEXT NOT NULL,
     "plantId" TEXT NOT NULL,
     "action" TEXT NOT NULL,
@@ -28,4 +28,4 @@ CREATE TABLE "CareLog" (
 );
 
 -- AddForeignKey
-ALTER TABLE "CareLog" ADD CONSTRAINT "CareLog_plantId_fkey" FOREIGN KEY ("plantId") REFERENCES "Plant"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."CareLog" ADD CONSTRAINT "CareLog_plantId_fkey" FOREIGN KEY ("plantId") REFERENCES "public"."Plant"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

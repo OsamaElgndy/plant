@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  phone     String    @unique
+  password  String
+
+  favorites Favorite[]
+  plants    Plant[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+enum Category {
+  INDOOR
+  OUTDOOR
+  SUCCULENT
+  HERB
+  OTHER
+}
+model Plant {
+  id             Int       @id @default(autoincrement())
+  name           String
+  species        String?
+  description    String?
+  location       String?
+  category       Category  @default(OTHER)
+  plantedDate    DateTime  @default(now())
+  lastWatered    DateTime?
+  lastFertilized DateTime?
+  health         String    @default("healthy") 
+  imageUrl       String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  userId         Int
+  user           User      @relation(fields: [userId], references: [id])
+
+  favorites      Favorite[]
+}
+
+model Favorite {
+  id        Int       @id @default(autoincrement())
+
+  userId    Int
+  plantId   Int
+
+  user      User      @relation(fields: [userId], references: [id])
+  plant     Plant     @relation(fields: [plantId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@unique([userId, plantId])
+}
